@@ -44,6 +44,7 @@ static inline size_t bragi_led_count(usbdevice* kb){
     LED_CASE_K(P_K100_OPTICAL, 193);
     LED_CASE_K(P_K100_MECHANICAL, 193);
     LED_CASE_K(P_K100_OPTICAL_VARIANT, 193);
+    LED_CASE_K(P_K100_AIR, 137);
     LED_CASE_K(P_K65_MINI, 123);
     LED_CASE_K(P_K70_TKL, 193);
     LED_CASE_K(P_K70_TKL_CHAMP_OPTIC, 193);
@@ -156,7 +157,13 @@ static inline int updatergb_alt_bragi(usbdevice* kb, int force){
     for(size_t i = 0; i < zones; i++)
         start[i * 3 + 2] = newlight->b[i];
 
-    if(bragi_write_to_handle(kb, pkt1, BRAGI_LIGHTING_HANDLE, sizeof(pkt1), 3 * zones + BRAGI_ALT_RGB_HEADER))
+    // The alt lighting resource has a fixed size, and the device rejects writes of any other length.
+    // The K100 AIR's is 414 bytes, one more than header + 3 bytes per zone.
+    size_t len = 3 * zones + BRAGI_ALT_RGB_HEADER;
+    if(kb->product == P_K100_AIR)
+        len = 414;
+
+    if(bragi_write_to_handle(kb, pkt1, BRAGI_LIGHTING_HANDLE, sizeof(pkt1), len))
         return 1;
 
     lastlight->forceupdate = newlight->forceupdate = 0;
