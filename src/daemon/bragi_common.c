@@ -204,6 +204,8 @@ static inline char* bragi_wl_string(usbdevice* kb){
     switch(kb->product){
     case P_K57_U:
         return "CORSAIR K57 RGB Wireless Gaming Keyboard";
+    case P_K100_AIR:
+        return "CORSAIR K100 AIR Wireless Gaming Keyboard";
     case P_IRONCLAW_W_U:
         return "CORSAIR IRONCLAW RGB WIRELESS Gaming Mouse";
     case P_HARPOON_WL_U:

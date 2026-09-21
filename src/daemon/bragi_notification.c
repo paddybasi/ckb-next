@@ -12,7 +12,16 @@ static void* _add_remove_new_bragi_device(void* context){
     usbdevice* kb = ctx->kb;
     ckb_info("ckb%d: bragi dongle hotplug thread started", INDEX_OF(kb, keyboard));
 
+    // bragi_update_dongle_subdevs() performs physical USB I/O on the dongle (routed
+    // through kb for each child it probes). dmutex must be held while accessing the
+    // USB interface (see usb.h), but connection-status notifications can arrive in a
+    // burst, spawning multiple concurrent instances of this thread. Without this lock
+    // they race on the dongle's shared endpoint, stepping on each other's requests and
+    // responses, which manifests as a flood of "Timeout while waiting for response"
+    // and subdevices repeatedly appearing/disappearing instead of ever settling.
+    queued_mutex_lock(dmutex(kb));
     bragi_update_dongle_subdevs(kb, ctx->prop);
+    queued_mutex_unlock(dmutex(kb));
 
     free(context);
     ckb_info("ckb%d: bragi dongle hotplug thread finished", INDEX_OF(kb, keyboard));

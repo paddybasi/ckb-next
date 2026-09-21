@@ -791,16 +791,30 @@ void process_input_urb(void* context, unsigned char* buffer, int urblen, ushort 
             if(devid && kb->children[devid - 1])
                 targetkb = kb->children[devid - 1];
         } else {
-            // Guess what device the event needs to go to
-
-            // FIXME: We are only picking the first device for now.
-            // We need to keep track of the mouse/keyboard children and use those pointers directly
-            // to avoid a for loop with IS_MOUSE and IS_KEYBOARD for every single input packet.
-            if(kb->children[0])
-                targetkb = kb->children[0];
+            // Unaddressed events (chiefly HID movement/keys) can't be matched by device id.
+            // The dongle exposes separate HID interfaces per device type, so pick the child by
+            // endpoint: 0x82/0x85 are the mouse interfaces, everything else is keyboard-like.
+            // The device can occupy any slot, so search for it rather than assuming slot 0.
+            //
+            // FIXME: Keep track of the mouse/keyboard children and use those pointers directly
+            // to avoid a for loop for every single input packet.
+            const int want_mouse = (ep == 0x82 || ep == 0x85);
+            usbdevice* match = NULL;
+            for(int i = 0; i < 7; i++){
+                usbdevice* child = kb->children[i];
+                if(!child)
+                    continue;
+                const int is_mouse = IS_MOUSE_DEV(child) ? 1 : 0;
+                if(is_mouse == want_mouse){
+                    match = child;
+                    break;
+                }
+            }
+            if(match)
+                targetkb = match;
 #ifdef DEBUG_USB_INPUT
             else
-                ckb_err("kb->children[0] is NULL. This is expected if a bragi WL device was just turned off.");
+                ckb_err("No matching child for ep 0x%02x. This is expected if a bragi WL device was just turned off.", ep);
 #endif
         }
         pthread_mutex_unlock(cmutex(kb));

@@ -116,6 +116,7 @@
 #define P_K100_OPTICAL       0x1b7c
 #define P_K100_MECHANICAL    0x1b7d
 #define P_K100_OPTICAL_VARIANT        0x1bc5
+#define P_K100_AIR           0x1bab /* wireless, via Slipstream dongle */
 
 #define P_M55_RGB_PRO        0x1b70
 
@@ -259,7 +260,7 @@ const char* product_str(ushort product);
 #define IS_MOUSEPAD_DEV(kb)             IS_MOUSEPAD((kb)->vendor, (kb)->product)
 
 // Devices that are considered experimental and are either not fully tested, or aren't fully implemented
-#define IS_EXPERIMENTAL(vendor, product) ((vendor) == V_CORSAIR && ((product) == P_K63_NRGB_WL || (product) == P_K63_NRGB_WL2 || (product) == P_K63_NRGB_WL3 || (product) == P_K63_NRGB_WL4 || (product) == P_DARK_CORE || (product) == P_DARK_CORE_WL || (product) == P_DARK_CORE_SE || (product) == P_DARK_CORE_SE_WL || (product) == P_IRONCLAW_W_U || (product) == P_IRONCLAW_W_D || (product) == P_HARPOON_WL_U || (product) == P_HARPOON_WL_D || (product) == P_K57_U || (product) == P_K57_D || (product) == P_DARK_CORE_RGB_PRO || (product) == P_DARK_CORE_RGB_PRO_WL || (product) == P_GENERIC_BRAGI_DONGLE || (product) == P_K65_MINI))
+#define IS_EXPERIMENTAL(vendor, product) ((vendor) == V_CORSAIR && ((product) == P_K63_NRGB_WL || (product) == P_K63_NRGB_WL2 || (product) == P_K63_NRGB_WL3 || (product) == P_K63_NRGB_WL4 || (product) == P_DARK_CORE || (product) == P_DARK_CORE_WL || (product) == P_DARK_CORE_SE || (product) == P_DARK_CORE_SE_WL || (product) == P_IRONCLAW_W_U || (product) == P_IRONCLAW_W_D || (product) == P_HARPOON_WL_U || (product) == P_HARPOON_WL_D || (product) == P_K57_U || (product) == P_K57_D || (product) == P_DARK_CORE_RGB_PRO || (product) == P_DARK_CORE_RGB_PRO_WL || (product) == P_GENERIC_BRAGI_DONGLE || (product) == P_K100_AIR || (product) == P_K65_MINI))
 
 /// Some devices cause usbhid to spend a long time initialising it. To work around this, we intentionally uncleanly
 /// deinitialise the device, skipping the usbhid handover.
@@ -280,7 +281,7 @@ const char* product_str(ushort product);
 #define IS_WIRELESS_DEV(kb)             (IS_WIRELESS((kb)->vendor, (kb)->product))
 
 /// Used for ID combinations which support wireless.
-#define IS_WIRELESS(vendor, product)    ((vendor) == V_CORSAIR && ((product) == P_DARK_CORE || (product) == P_DARK_CORE_WL || (product) == P_DARK_CORE_SE || (product) == P_DARK_CORE_SE_WL || (product) == P_DARK_CORE_RGB_PRO || (product) == P_DARK_CORE_RGB_PRO_WL || (product) == P_DARK_CORE_RGB_PRO_SE || (product) == P_DARK_CORE_RGB_PRO_SE_WL || (product) == P_K63_NRGB_WL || (product) == P_K63_NRGB_WL2 || (product) == P_K63_NRGB_WL3 || (product) == P_K63_NRGB_WL4 || (product) == P_IRONCLAW_W_U || (product) == P_IRONCLAW_W_D || (product) == P_K57_U || (product) == P_K57_D || (product) == P_HARPOON_WL_U || (product) == P_HARPOON_WL_D || (product) == P_GENERIC_BRAGI_DONGLE))
+#define IS_WIRELESS(vendor, product)    ((vendor) == V_CORSAIR && ((product) == P_DARK_CORE || (product) == P_DARK_CORE_WL || (product) == P_DARK_CORE_SE || (product) == P_DARK_CORE_SE_WL || (product) == P_DARK_CORE_RGB_PRO || (product) == P_DARK_CORE_RGB_PRO_WL || (product) == P_DARK_CORE_RGB_PRO_SE || (product) == P_DARK_CORE_RGB_PRO_SE_WL || (product) == P_K63_NRGB_WL || (product) == P_K63_NRGB_WL2 || (product) == P_K63_NRGB_WL3 || (product) == P_K63_NRGB_WL4 || (product) == P_IRONCLAW_W_U || (product) == P_IRONCLAW_W_D || (product) == P_K57_U || (product) == P_K57_D || (product) == P_HARPOON_WL_U || (product) == P_HARPOON_WL_D || (product) == P_K100_AIR || (product) == P_GENERIC_BRAGI_DONGLE))
 /// Used for devices which are connected via dongle instead of cable.
 #define IS_DONGLE(kb)                   ((kb)->product == P_DARK_CORE_WL || (kb)->product == P_DARK_CORE_SE_WL || (kb)->product == P_DARK_CORE_RGB_PRO_WL || (kb)->product == P_DARK_CORE_RGB_PRO_SE_WL || (kb)->product == P_IRONCLAW_W_D || (kb)->product == P_K63_NRGB_WL2 || (kb)->product == P_K63_NRGB_WL4 || (kb)->product == P_K57_D || (kb)->product == P_HARPOON_WL_D || (kb)->product == P_GENERIC_BRAGI_DONGLE)
 
@@ -297,7 +298,7 @@ const char* product_str(ushort product);
 #define DEV_HAS_VOLWHEEL(kb)            (!(IS_K65(kb) || IS_K63(kb) || (kb)->product == P_K57_U || IS_K55(kb) || IS_K60PRORGB(kb)))
 
 // Devices that have a control wheel
-#define DEV_HAS_CTRLWHEEL(kb)           ((kb)->vendor == V_CORSAIR && (IS_K70CORERGB(kb) || (kb)->product == P_K100_MECHANICAL || (kb)->product == P_K100_OPTICAL || (kb)->product == P_K100_OPTICAL_VARIANT))
+#define DEV_HAS_CTRLWHEEL(kb)           ((kb)->vendor == V_CORSAIR && (IS_K70CORERGB(kb) || (kb)->product == P_K100_MECHANICAL || (kb)->product == P_K100_OPTICAL || (kb)->product == P_K100_OPTICAL_VARIANT || (kb)->product == P_K100_AIR))
 
 // Devices that use the NXP protocol and have the DPI stage RGB data in the DPI packet
 #define NXP_RGB_IN_DPI_PKT(kb)          ((kb)->vendor == V_CORSAIR && ((kb)->product == P_GLAIVE_PRO || IS_DARK_CORE_NXP(kb)))
@@ -310,7 +311,7 @@ const char* product_str(ushort product);
         clock_nanosleep(CLOCK_MONOTONIC, 0, &(struct timespec) {.tv_nsec = 30000000}, NULL)
 
 // This should be removed in the future when we implement autodetection
-#define USES_BRAGI(vendor, product)                  (((vendor) == (V_CORSAIR)) && ((product) == (P_M55_RGB_PRO) || (product) == (P_IRONCLAW_W_U) || (product) == (P_IRONCLAW_W_D) || (product) == (P_K95_PLATINUM_XT) || (product) == (P_DARK_CORE_RGB_PRO_SE) || (product) == (P_DARK_CORE_RGB_PRO_SE_WL) || (product) == P_HARPOON_WL_U || (product) == P_HARPOON_WL_D || (product) == P_K57_U || (product) == P_K57_D || (product) == P_KATAR_PRO_XT || (product) == P_KATAR_PRO || (product) == P_K60_PRO_RGB || (product) == P_K60_PRO_RGB_LP || (product) == P_K60_PRO_RGB_SE || (product) == P_K60_PRO_MONO || (product) == P_K60_PRO_TKL || (product) == P_K55_PRO || (product) == P_K55_PRO_XT || (product) == (P_DARK_CORE_RGB_PRO) || (product) == (P_DARK_CORE_RGB_PRO_WL) || (product) == P_GENERIC_BRAGI_DONGLE || (product) == P_K100_OPTICAL || (product) == P_K100_MECHANICAL || (product) == P_K100_OPTICAL_VARIANT || (product) == P_K65_MINI || (product) == P_K70_TKL || (product) == P_K70_TKL_CHAMP_OPTIC || (product) == P_MM700 || (product) == P_K70_PRO || (product) == P_K70_PRO_OPTIC || (product) == P_K70_CORE_RGB || (product) == P_K70_CORE_RGB_2 || (product) == P_K70_CORE_RGB_3 || (product) == P_SCIMITAR_ELITE_BRAGI))
+#define USES_BRAGI(vendor, product)                  (((vendor) == (V_CORSAIR)) && ((product) == (P_M55_RGB_PRO) || (product) == (P_IRONCLAW_W_U) || (product) == (P_IRONCLAW_W_D) || (product) == (P_K95_PLATINUM_XT) || (product) == (P_DARK_CORE_RGB_PRO_SE) || (product) == (P_DARK_CORE_RGB_PRO_SE_WL) || (product) == P_HARPOON_WL_U || (product) == P_HARPOON_WL_D || (product) == P_K57_U || (product) == P_K57_D || (product) == P_KATAR_PRO_XT || (product) == P_KATAR_PRO || (product) == P_K60_PRO_RGB || (product) == P_K60_PRO_RGB_LP || (product) == P_K60_PRO_RGB_SE || (product) == P_K60_PRO_MONO || (product) == P_K60_PRO_TKL || (product) == P_K55_PRO || (product) == P_K55_PRO_XT || (product) == (P_DARK_CORE_RGB_PRO) || (product) == (P_DARK_CORE_RGB_PRO_WL) || (product) == P_GENERIC_BRAGI_DONGLE || (product) == P_K100_AIR || (product) == P_K100_OPTICAL || (product) == P_K100_MECHANICAL || (product) == P_K100_OPTICAL_VARIANT || (product) == P_K65_MINI || (product) == P_K70_TKL || (product) == P_K70_TKL_CHAMP_OPTIC || (product) == P_MM700 || (product) == P_K70_PRO || (product) == P_K70_PRO_OPTIC || (product) == P_K70_CORE_RGB || (product) == P_K70_CORE_RGB_2 || (product) == P_K70_CORE_RGB_3 || (product) == P_SCIMITAR_ELITE_BRAGI))
 
 // Devices that use bragi jumbo packets (1024 bytes)
 #define USES_BRAGI_JUMBO(vendor, product)           ((vendor) == (V_CORSAIR) && ((product) == P_K100_OPTICAL || (product) == P_K100_MECHANICAL || (product) == P_K100_OPTICAL_VARIANT || (product) == P_K65_MINI || (product) == P_K70_TKL || (product) == P_K70_TKL_CHAMP_OPTIC || (product) == P_K70_PRO || (product) == P_K70_PRO_OPTIC))

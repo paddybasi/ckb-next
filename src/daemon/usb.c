@@ -96,6 +96,7 @@ const device_desc models[] = {
     { V_CORSAIR, P_K100_OPTICAL, },
     { V_CORSAIR, P_K100_MECHANICAL, },
     { V_CORSAIR, P_K100_OPTICAL_VARIANT, },
+    { V_CORSAIR, P_K100_AIR, },
     { V_CORSAIR, P_K65_MINI, },
     // Mice
     { V_CORSAIR, P_M55_RGB_PRO, },
@@ -200,7 +201,7 @@ const char* vendor_str(ushort vendor){
 /// product_str() needs the \a product \a ID
 ///
 const char* product_str(ushort product){
-    if(product == P_K100_OPTICAL || product == P_K100_MECHANICAL || product == P_K100_OPTICAL_VARIANT)
+    if(product == P_K100_OPTICAL || product == P_K100_MECHANICAL || product == P_K100_OPTICAL_VARIANT || product == P_K100_AIR)
         return "k100";
     if(product == P_K95_LEGACY || product == P_K90_LEGACY)
         return "k95l";
