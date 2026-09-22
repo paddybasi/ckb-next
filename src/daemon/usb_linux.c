@@ -363,9 +363,18 @@ static int usbclaim(usbdevice* kb){
 /// \todo it seems that no one wants to try the reset again. But I'v seen it somewhere...
 ///
 int os_resetusb(usbdevice* kb, const char* file, int line) {
-    TEST_RESET(usbunclaim(kb, 1));
-    TEST_RESET(ioctl(kb->handle - 1, USBDEVFS_RESET));
-    TEST_RESET(usbclaim(kb));
+    // A bragi dongle child (mouse/keyboard) has no USB handle of its own - all physical I/O is
+    // routed through its parent. kb->handle is always 0 here, so resetting kb directly always
+    // failed with EBADF and never actually reset anything. Reset the physical dongle instead.
+    //
+    // NOTE: this does not take kb->parent's dmutex. The caller already holds dmutex(kb), and the
+    // notification hotplug thread (bragi_notification.c) takes the parent's dmutex before a
+    // child's, so locking it here in the opposite order would deadlock against it. This mirrors
+    // the same not-fully-locked physical access a dongle child's own setup path already has.
+    usbdevice* target = kb->parent ? kb->parent : kb;
+    TEST_RESET(usbunclaim(target, 1));
+    TEST_RESET(ioctl(target->handle - 1, USBDEVFS_RESET));
+    TEST_RESET(usbclaim(target));
     // Success!
     return 0;
 }
